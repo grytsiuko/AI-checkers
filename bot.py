@@ -5,6 +5,7 @@ import aiohttp
 
 from env import SERVER_URL
 from board import Board
+from state import State
 
 
 class Bot:
@@ -13,10 +14,11 @@ class Bot:
         self._color = None
         self._number = None
         self._opponent_number = None
+        self._opponent_color = None
         self._token = None
         self._session = None
-        self._board = Board()
-        self._state = None
+        self._board: Board = Board()
+        self._state: State = State()
 
     def start(self):
         loop = asyncio.new_event_loop()
@@ -36,9 +38,9 @@ class Bot:
         while True:
             while True:
                 await self._refresh_state()
-                if self._state['is_finished']:
+                if self._state.is_finished():
                     return
-                if self._state['whose_turn'] == self._color:
+                if self._state.is_color_move(self._color):
                     break
 
             await asyncio.sleep(0.25)
@@ -51,8 +53,8 @@ class Bot:
             self._board.make_move(move, self._number)
 
     def _update_with_last_move(self):
-        if self._state['last_move'] is not None and self._state['last_move']['player'] != self._color:
-            for move in self._state['last_move']['last_moves']:
+        if self._state.last_move_present() and self._state.is_last_move_color(self._opponent_color):
+            for move in self._state.last_moves():
                 self._board.make_move(move, self._opponent_number)
 
     async def _connect(self):
@@ -65,13 +67,14 @@ class Bot:
             self._token = res['token']
             self._number = 1 if self._color == 'RED' else 2
             self._opponent_number = 3 - self._number
+            self._opponent_color = 'RED' if self._color == 'BLACK' else 'BLACK'
 
     async def _refresh_state(self):
         async with self._session.get(
                 f'{SERVER_URL}/game'
         ) as resp:
             res = (await resp.json())['data']
-            self._state = res
+            self._state = State(res)
 
     async def _make_move(self, move):
         json = {'move': move}
