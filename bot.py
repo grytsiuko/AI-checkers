@@ -49,6 +49,5 @@ class Bot:
             self._board.make_move(move, self._meta_info.self_number)
 
     def _update_with_last_move(self):
-        if self._state.last_move_present() and self._state.is_last_move_color(self._meta_info.opponent_color):
-            for move in self._state.last_moves():
-                self._board.make_move(move, self._meta_info.opponent_number)
+        for move in self._state.last_moves(self._meta_info.opponent_color):
+            self._board.make_move(move, self._meta_info.opponent_number)

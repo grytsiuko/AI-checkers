@@ -8,11 +8,14 @@ class State:
     def is_color_move(self, color):
         return self._data['whose_turn'] == color
 
-    def last_move_present(self):
+    def last_moves(self, color):
+        if self._last_move_present() and self._is_last_move_color(color):
+            return self._data['last_move']['last_moves']
+        else:
+            return []
+
+    def _last_move_present(self):
         return self._data['last_move'] is not None
 
-    def is_last_move_color(self, color):
+    def _is_last_move_color(self, color):
         return self._data['last_move']['player'] == color
-
-    def last_moves(self):
-        return self._data['last_move']['last_moves']
