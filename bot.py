@@ -4,7 +4,7 @@ import random
 import aiohttp
 
 from env import SERVER_URL
-from game import Game
+from board import Board
 
 
 class Bot:
@@ -15,7 +15,7 @@ class Bot:
         self._opponent_number = None
         self._token = None
         self._session = None
-        self._game = Game()
+        self._board = Board()
         self._state = None
 
     def start(self):
@@ -43,19 +43,17 @@ class Bot:
 
             await asyncio.sleep(0.25)
             self._update_with_last_move()
-            possible_moves = self._game.get_possible_moves()
+            possible_moves = self._board.get_possible_moves()
             if len(possible_moves) == 0:
                 return
             move = random.choice(possible_moves)
             await self._make_move(move)
-            assert self._game.whose_turn() == self._number
-            self._game = self._game.move(move)
+            self._board.make_move(move, self._number)
 
     def _update_with_last_move(self):
         if self._state['last_move'] is not None and self._state['last_move']['player'] != self._color:
             for move in self._state['last_move']['last_moves']:
-                assert self._game.whose_turn() == self._opponent_number
-                self._game = self._game.move(move)
+                self._board.make_move(move, self._opponent_number)
 
     async def _connect(self):
         async with self._session.post(
