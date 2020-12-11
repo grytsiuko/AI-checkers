@@ -1,3 +1,4 @@
 aiohttp==3.7.3
 imparaai-checkers==1.4.2
 trafaret-config==2.0.2
+python-dotenv==0.15.0

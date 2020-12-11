@@ -1,7 +1,16 @@
-import threading
+from dotenv import load_dotenv
+load_dotenv()
 
+import threading
 from bot import Bot
 
+
 if __name__ == '__main__':
-    threading.Thread(target=Bot().start).start()
-    threading.Thread(target=Bot().start).start()
+    a = threading.Thread(target=Bot("A").start)
+    b = threading.Thread(target=Bot("B").start)
+
+    a.start()
+    b.start()
+
+    a.join()
+    b.join()

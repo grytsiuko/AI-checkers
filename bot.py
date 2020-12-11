@@ -1,11 +1,18 @@
-from time import sleep
+import asyncio
+
+from env import SERVER_URL
 
 
 class Bot:
-    def __init__(self):
-        pass
+    def __init__(self, name):
+        self.name = name
 
     def start(self):
-        for i in range(1, 100):
-            print(i)
-            sleep(0.1)
+        loop = asyncio.new_event_loop()
+        loop.run_until_complete(self._start())
+        loop.close()
+
+    async def _start(self):
+        print(f'Bot {self.name} init')
+        print(SERVER_URL)
+        await asyncio.sleep(0.5)
