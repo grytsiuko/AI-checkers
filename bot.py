@@ -8,6 +8,7 @@ from board import Board
 from meta_info import MetaInfo
 from state import State
 from functools import reduce
+import datetime
 
 
 class Bot:
@@ -61,9 +62,9 @@ class Bot:
 
         for move in possible_moves:
             score = self._alpha_beta(self._board._game.board.create_new_board_from_move(move),
-                                     self.MAX_DEPTH, float("-inf"),
+                                     self.MAX_DEPTH, best_score,
                                      float("inf"), False)
-            if best_score < score:  # todo (<=) ?
+            if best_score <= score:
                 best_score = score
                 best_move = move
         return best_move
