@@ -46,7 +46,7 @@ class Bot:
                 if self._state.is_color_move(self._meta_info.self_color):
                     break
 
-            await asyncio.sleep(0.25)
+            # await asyncio.sleep(0.25)
             self._update_with_last_move()
             move = self._find_best_move()
             if move is None:
@@ -62,6 +62,10 @@ class Bot:
         random.shuffle(possible_moves)
 
         for move in possible_moves:
+            # start = datetime.datetime.now()
+            # self._apply_heuristic(self._board._game.board.create_new_board_from_move(move))
+            # end = datetime.datetime.now()
+            # print(end - start)
             score = self._alpha_beta(self._board._game.board.create_new_board_from_move(move),
                                      self.MAX_DEPTH, best_score,
                                      float("inf"))
@@ -84,6 +88,7 @@ class Bot:
                             self._alpha_beta(board.create_new_board_from_move(move), depth - 1, alpha, beta))
                 alpha = max(alpha, value)
                 if alpha >= beta:
+                    # print(f'Cutted on {depth} depth')
                     break
             return value
 
@@ -97,6 +102,7 @@ class Bot:
                             self._alpha_beta(board.create_new_board_from_move(move), depth - 1, alpha, beta))
                 beta = min(beta, value)
                 if beta <= alpha:
+                    # print(f'Cutted on {depth} depth')
                     break
             return value
 
