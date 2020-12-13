@@ -1,7 +1,7 @@
 from checkers import game
 
 
-class Board:
+class GameWrapper:
 
     def __init__(self):
         self._game = game.Game()
