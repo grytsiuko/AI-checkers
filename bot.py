@@ -2,9 +2,10 @@ import asyncio
 import random
 
 import aiohttp
+from checkers.board import Board
 
 from api import Api
-from board import Board
+from game_wrapper import GameWrapper
 from meta_info import MetaInfo
 from state import State
 from functools import reduce
@@ -18,7 +19,7 @@ class Bot:
 
     def __init__(self, name):
         self._name = name
-        self._board: Board = Board()
+        self._board: GameWrapper = GameWrapper()
         self._state: State = State()
         self._meta_info: MetaInfo = MetaInfo()
         self._api: Api = Api()
@@ -45,7 +46,7 @@ class Bot:
                 if self._state.is_color_move(self._meta_info.self_color):
                     break
 
-            await asyncio.sleep(0.25)
+            # await asyncio.sleep(0.25)
             self._update_with_last_move()
             move = self._find_best_move()
             if move is None:
@@ -61,28 +62,33 @@ class Bot:
         random.shuffle(possible_moves)
 
         for move in possible_moves:
+            # start = datetime.datetime.now()
+            # self._apply_heuristic(self._board._game.board.create_new_board_from_move(move))
+            # end = datetime.datetime.now()
+            # print(end - start)
             score = self._alpha_beta(self._board._game.board.create_new_board_from_move(move),
                                      self.MAX_DEPTH, best_score,
-                                     float("inf"), False)
+                                     float("inf"))
             if best_score <= score:
                 best_score = score
                 best_move = move
         return best_move
 
-    def _alpha_beta(self, board, depth, alpha, beta, is_max_turn):
+    def _alpha_beta(self, board: Board, depth: int, alpha: float, beta: float):
         if depth <= 0:  # or self._is_terminal(board):
             return self._apply_heuristic(board)
 
-        if is_max_turn:
+        if self._meta_info.self_number == board.player_turn:
             value = float("-inf")
             possible_moves = board.get_possible_moves()
             random.shuffle(possible_moves)
 
             for move in possible_moves:
                 value = max(value,
-                            self._alpha_beta(board.create_new_board_from_move(move), depth - 1, alpha, beta, False))
+                            self._alpha_beta(board.create_new_board_from_move(move), depth - 1, alpha, beta))
                 alpha = max(alpha, value)
                 if alpha >= beta:
+                    # print(f'Cutted on {depth} depth')
                     break
             return value
 
@@ -93,9 +99,10 @@ class Bot:
 
             for move in possible_moves:
                 value = min(value,
-                            self._alpha_beta(board.create_new_board_from_move(move), depth - 1, alpha, beta, True))
+                            self._alpha_beta(board.create_new_board_from_move(move), depth - 1, alpha, beta))
                 beta = min(beta, value)
                 if beta <= alpha:
+                    # print(f'Cutted on {depth} depth')
                     break
             return value
 

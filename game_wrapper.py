@@ -1,10 +1,11 @@
 from checkers import game
+from checkers.game import Game
 
 
-class Board:
+class GameWrapper:
 
     def __init__(self):
-        self._game = game.Game()
+        self._game: Game = game.Game()
 
     def get_possible_moves(self):
         return self._game.get_possible_moves()
