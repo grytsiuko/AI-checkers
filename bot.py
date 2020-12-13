@@ -2,10 +2,10 @@ import asyncio
 import random
 
 import aiohttp
-from checkers.board import Board
+# from checkers.board import Board
 
 from api import Api
-from game_wrapper import GameWrapper
+from game_board import Board
 from meta_info import MetaInfo
 from state import State
 from functools import reduce
@@ -13,13 +13,13 @@ import datetime
 
 
 class Bot:
-    MAX_DEPTH = 3
+    MAX_DEPTH = 6
     CHECKER_POINTS = 1
     KING_POINTS = 2
 
     def __init__(self, name):
         self._name = name
-        self._board: GameWrapper = GameWrapper()
+        self._board: Board = Board()
         self._state: State = State()
         self._meta_info: MetaInfo = MetaInfo()
         self._api: Api = Api()
@@ -62,30 +62,38 @@ class Bot:
         random.shuffle(possible_moves)
 
         for move in possible_moves:
+            start = datetime.datetime.now()
+            was_captured = self._board.do_move(move)
+            self._board.do_reverse_move(move, was_captured)
+            end = datetime.datetime.now()
+            print(end - start)
             # start = datetime.datetime.now()
             # self._apply_heuristic(self._board._game.board.create_new_board_from_move(move))
             # end = datetime.datetime.now()
             # print(end - start)
-            score = self._alpha_beta(self._board._game.board.create_new_board_from_move(move),
-                                     self.MAX_DEPTH, best_score,
-                                     float("inf"))
+            score = self._alpha_beta_call(move, self.MAX_DEPTH, best_score, float("inf"))
             if best_score <= score:
                 best_score = score
                 best_move = move
         return best_move
 
-    def _alpha_beta(self, board: Board, depth: int, alpha: float, beta: float):
-        if depth <= 0:  # or self._is_terminal(board):
-            return self._apply_heuristic(board)
+    def _alpha_beta_call(self, move, depth, alpha, beta):
+        was_captured = self._board.do_move(move)
+        score = self._alpha_beta(depth, alpha, beta)
+        self._board.do_reverse_move(move, was_captured)
+        return score
 
-        if self._meta_info.self_number == board.player_turn:
+    def _alpha_beta(self, depth: int, alpha: float, beta: float):
+        if depth <= 0:  # or self._is_terminal(board):
+            return self._apply_heuristic()
+
+        if self._meta_info.self_number == self._board.player_turn:
             value = float("-inf")
-            possible_moves = board.get_possible_moves()
+            possible_moves = self._board.get_possible_moves()
             random.shuffle(possible_moves)
 
             for move in possible_moves:
-                value = max(value,
-                            self._alpha_beta(board.create_new_board_from_move(move), depth - 1, alpha, beta))
+                value = max(value, self._alpha_beta_call(move, depth - 1, alpha, beta))
                 alpha = max(alpha, value)
                 if alpha >= beta:
                     # print(f'Cutted on {depth} depth')
@@ -94,25 +102,25 @@ class Bot:
 
         else:
             value = float("inf")
-            possible_moves = board.get_possible_moves()
+            possible_moves = self._board.get_possible_moves()
             random.shuffle(possible_moves)
 
             for move in possible_moves:
-                value = min(value,
-                            self._alpha_beta(board.create_new_board_from_move(move), depth - 1, alpha, beta))
+                value = min(value, self._alpha_beta_call(move, depth - 1, alpha, beta))
+                            # self._alpha_beta(board.create_new_board_from_move(move), depth - 1, alpha, beta))
                 beta = min(beta, value)
                 if beta <= alpha:
                     # print(f'Cutted on {depth} depth')
                     break
             return value
 
-    def _apply_heuristic(self, board):  # todo make static?
+    def _apply_heuristic(self):  # todo make static?
         self_score = reduce(
             (lambda count, piece: count + (self.KING_POINTS if piece.king else self.CHECKER_POINTS)),
-            board.searcher.get_pieces_by_player(self._meta_info.self_number), 0)
+            self._board.searcher.get_pieces_by_player(self._meta_info.self_number), 0)
         opponent_score = reduce(
             (lambda count, piece: count + (self.KING_POINTS if piece.king else self.CHECKER_POINTS)),
-            board.searcher.get_pieces_by_player(self._meta_info.opponent_number), 0)
+            self._board.searcher.get_pieces_by_player(self._meta_info.opponent_number), 0)
         return self_score - opponent_score
 
     # def _is_terminal(self, board):  # todo make static?
