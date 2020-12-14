@@ -43,7 +43,7 @@ class MiniMax:
 
     def _alpha_beta_call(self, move, depth, alpha, beta):
         was_captured = self._board.do_move(move)
-        new_depth = depth if was_captured else depth - 1  # todo if capture_moves more than 1 it can take some time
+        new_depth = depth if self._board.piece_requiring_further_capture_moves is not None else depth - 1  # todo if capture_moves more than 1 it can take some time
         # self._board.print()
         # print(move)
         # self._apply_heuristic()
