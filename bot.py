@@ -57,34 +57,40 @@ class Bot:
 
     def _find_best_move(self):
         best_move = None
-        best_score = float("-inf")
+        best_score = None
         possible_moves = self._board.get_possible_moves()
         random.shuffle(possible_moves)
 
         for move in possible_moves:
-            start = datetime.datetime.now()
-            was_captured = self._board.do_move(move)
-            self._board.do_reverse_move(move, was_captured)
-            end = datetime.datetime.now()
-            print(end - start)
+            # print(f'MAYBEEEEEEEEEEEEEEEEEE {move}')
             # start = datetime.datetime.now()
-            # self._apply_heuristic(self._board._game.board.create_new_board_from_move(move))
+            # was_captured = self._board.do_move(move)
+            # self._board.do_reverse_move(move, was_captured)
             # end = datetime.datetime.now()
             # print(end - start)
-            score = self._alpha_beta_call(move, self.MAX_DEPTH, best_score, float("inf"))
-            if best_score <= score:
+            score = self._alpha_beta_call(
+                move,
+                self.MAX_DEPTH,
+                float('-inf') if best_score is None else best_score,
+                float("inf")
+            )
+            if best_score is None or best_score < score:
                 best_score = score
                 best_move = move
         return best_move
 
     def _alpha_beta_call(self, move, depth, alpha, beta):
         was_captured = self._board.do_move(move)
+        # self._board.print()
+        # print(move)
+        # self._apply_heuristic()
         score = self._alpha_beta(depth, alpha, beta)
         self._board.do_reverse_move(move, was_captured)
         return score
 
     def _alpha_beta(self, depth: int, alpha: float, beta: float):
         if depth <= 0:  # or self._is_terminal(board):
+            # print('TERMINAL TERMINAL TERMINAL TERMINAL TERMINAL ')
             return self._apply_heuristic()
 
         if self._meta_info.self_number == self._board.player_turn:
@@ -121,6 +127,7 @@ class Bot:
         opponent_score = reduce(
             (lambda count, piece: count + (self.KING_POINTS if piece.king else self.CHECKER_POINTS)),
             self._board.searcher.get_pieces_by_player(self._meta_info.opponent_number), 0)
+        # print(f'HEURISTIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIC {self_score - opponent_score}')
         return self_score - opponent_score
 
     # def _is_terminal(self, board):  # todo make static?

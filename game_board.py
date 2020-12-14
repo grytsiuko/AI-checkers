@@ -129,6 +129,30 @@ class Board:
 
         return True
 
+    def print(self):
+        print("###########")
+        for i in range(0, 8):
+            for k in range(0, 8):
+                flag = False
+                for piece in self.pieces:
+                    if piece.captured:
+                        continue
+                    pos = piece.position - 1
+                    if k % 2 == 0:
+                        row = (i - 1 ) / 2
+                    else:
+                        row = i / 2
+                    col = k
+                    if col * 4 + row == pos:
+                        print(piece.player, end='')
+                        flag = True
+                        break
+                if not flag:
+                    print('-', end='')
+            print()
+
+        print("###########")
+
     def __setattr__(self, name, value):
         super(Board, self).__setattr__(name, value)
 
