@@ -85,10 +85,11 @@ class Bot:
 
     def _alpha_beta_call(self, move, depth, alpha, beta):
         was_captured = self._board.do_move(move)
+        new_depth = depth if was_captured else depth - 1  # todo if capture_moves more than 1 it can take some time
         # self._board.print()
         # print(move)
         # self._apply_heuristic()
-        score = self._alpha_beta(depth, alpha, beta)
+        score = self._alpha_beta(new_depth, alpha, beta)
         self._board.do_reverse_move(move, was_captured)
         return score
 
@@ -103,7 +104,7 @@ class Bot:
             random.shuffle(possible_moves)
 
             for move in possible_moves:
-                value = max(value, self._alpha_beta_call(move, depth - 1, alpha, beta))
+                value = max(value, self._alpha_beta_call(move, depth, alpha, beta))
                 alpha = max(alpha, value)
                 if alpha >= beta:
                     # print(f'Cutted on {depth} depth')
@@ -116,7 +117,7 @@ class Bot:
             random.shuffle(possible_moves)
 
             for move in possible_moves:
-                value = min(value, self._alpha_beta_call(move, depth - 1, alpha, beta))
+                value = min(value, self._alpha_beta_call(move, depth, alpha, beta))
                             # self._alpha_beta(board.create_new_board_from_move(move), depth - 1, alpha, beta))
                 beta = min(beta, value)
                 if beta <= alpha:
