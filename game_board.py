@@ -40,7 +40,7 @@ class Board:
             return False
 
     def do_reverse_move(self, move, was_captured):
-        move.reverse()
+        move.reverse()  # todo new list?
 
         piece = self.searcher.get_piece_by_position(move[0])
         piece.king = piece.king_trace.popleft()

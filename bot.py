@@ -13,12 +13,13 @@ import datetime
 
 
 class Bot:
-    MAX_DEPTH = 6
+    # MAX_DEPTH = 6
     CHECKER_POINTS = 1
     KING_POINTS = 2
 
-    def __init__(self, name):
+    def __init__(self, name, depth):
         self._name = name
+        self._depth = depth
         self._board: Board = Board()
         self._state: State = State()
         self._meta_info: MetaInfo = MetaInfo()
@@ -59,6 +60,9 @@ class Bot:
         best_move = None
         best_score = None
         possible_moves = self._board.get_possible_moves()
+        if len(possible_moves) == 1:
+            return possible_moves[0]
+
         random.shuffle(possible_moves)
 
         for move in possible_moves:
@@ -70,7 +74,7 @@ class Bot:
             # print(end - start)
             score = self._alpha_beta_call(
                 move,
-                self.MAX_DEPTH,
+                self._depth,
                 float('-inf') if best_score is None else best_score,
                 float("inf")
             )
