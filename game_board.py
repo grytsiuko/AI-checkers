@@ -130,7 +130,7 @@ class Board:
         return True
 
     def print(self):
-        print("###########")
+        print("########################")
         for i in range(0, 8):
             for k in range(0, 8):
                 flag = False
@@ -144,14 +144,15 @@ class Board:
                         row = i / 2
                     col = k
                     if col * 4 + row == pos:
-                        print(piece.player, end='')
+                        king_char = '|' if piece.king else ' '
+                        print(king_char + str(piece.player) + king_char, end='')
                         flag = True
                         break
                 if not flag:
-                    print('-', end='')
+                    print(' - ', end='')
             print()
 
-        print("###########")
+        print("########################")
 
     def __setattr__(self, name, value):
         super(Board, self).__setattr__(name, value)

@@ -1,18 +1,14 @@
-
 import random
 from functools import reduce
 
 
 class MiniMax:
 
-    # MAX_DEPTH = 6
-    CHECKER_POINTS = 1
-    KING_POINTS = 2
-
-    def __init__(self, board, meta_info, depth):
+    def __init__(self, board, meta_info, depth, heuristic):
         self._board = board
         self._meta_info = meta_info
         self._depth = depth
+        self._heuristic = heuristic
 
     def find_best_move(self):
         best_move = None
@@ -84,14 +80,34 @@ class MiniMax:
             return value
 
     def _apply_heuristic(self):  # todo make static?
-        self_score = reduce(
-            (lambda count, piece: count + (self.KING_POINTS if piece.king else self.CHECKER_POINTS)),
-            self._board.searcher.get_pieces_by_player(self._meta_info.self_number), 0)
-        opponent_score = reduce(
-            (lambda count, piece: count + (self.KING_POINTS if piece.king else self.CHECKER_POINTS)),
-            self._board.searcher.get_pieces_by_player(self._meta_info.opponent_number), 0)
-        # print(f'HEURISTIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIC {self_score - opponent_score}')
-        return self_score - opponent_score
+        self_pieces = self._board.searcher.get_pieces_by_player(self._meta_info.self_number)
+        opponent_pieces = self._board.searcher.get_pieces_by_player(self._meta_info.opponent_number)
+
+        self_king_amount = reduce(
+            (lambda count, piece: count + (1 if piece.king else 0)), self_pieces, 0
+        )
+        self_simple_amount = len(self_pieces) - self_king_amount
+
+        opponent_king_amount = reduce(
+            (lambda count, piece: count + (1 if piece.king else 0)), opponent_pieces, 0
+        )
+        opponent_simple_amount = len(opponent_pieces) - opponent_king_amount
+
+        heuristic = self._heuristic.calculate(
+            self_simple_amount=self_simple_amount,
+            self_king_amount=self_king_amount,
+            opponent_simple_amount=opponent_simple_amount,
+            opponent_king_amount=opponent_king_amount,
+        )
+
+        self._board.print()
+        print(f'number                 {self._meta_info.self_number}')
+        print(f'self simple amount     {self_simple_amount}')
+        print(f'self king amount       {self_king_amount}')
+        print(f'opponent simple amount {opponent_simple_amount}')
+        print(f'opponent king amount   {opponent_king_amount}')
+        print(f'HEURISTIC {heuristic}\n\n')
+        return heuristic
 
     # def _is_terminal(self, board):  # todo make static?
     #     return not board.count_movable_player_pieces(board.player_turn)

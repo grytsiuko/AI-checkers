@@ -13,7 +13,7 @@ import datetime
 
 class Bot:
 
-    def __init__(self, name, depth):
+    def __init__(self, name, depth, heuristic):
         self._name = name
         self._depth = depth
         self._board: Board = Board()
@@ -21,6 +21,7 @@ class Bot:
         self._meta_info: MetaInfo = MetaInfo()
         self._api: Api = Api()
         self._mini_max = None
+        self._heuristic = heuristic
 
     def start(self):
         loop = asyncio.new_event_loop()
@@ -31,7 +32,7 @@ class Bot:
         session = aiohttp.ClientSession(loop=loop)
         self._api = Api(session)
         self._meta_info = await self._api.connect(self._name)
-        self._mini_max = MiniMax(self._board, self._meta_info, self._depth)
+        self._mini_max = MiniMax(self._board, self._meta_info, self._depth, self._heuristic)
 
         await self._play()
         await session.close()
