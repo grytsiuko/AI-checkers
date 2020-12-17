@@ -1,6 +1,8 @@
+import random
+
 from bot import Bot
 from game_board import Board
-from heuristics.amount_heuristic import AmountHeuristic
+from heuristics.generic_heuristic import GenericHeuristic
 from meta_info import MetaInfo
 
 MAX_COUNT_NO_CAPTURE = 100
@@ -27,7 +29,7 @@ def test_bots(a, b):
         else:
             move = b._mini_max.find_best_move()
 
-        print(f'{board.player_turn} - {move}')
+        # print(f'{board.player_turn} - {move}')
 
         if move is None:
             winner_number = 3 - board.player_turn
@@ -45,8 +47,25 @@ def test_heuristics(a, b):
     return test_bots(b1, b2)
 
 
+def random_generic_heuristic_weights():
+    ans = []
+    while len(ans) < GenericHeuristic.PARAMETER_LIST_LENGTH:
+        ans.append((
+            random.uniform(GenericHeuristic.MIN_COEF, GenericHeuristic.MAX_COEF),
+            random.randint(GenericHeuristic.MIN_POW, GenericHeuristic.MAX_POW)
+        ))
+    return ans
+
+
 if __name__ == '__main__':
-    a = AmountHeuristic()
-    b = AmountHeuristic()
+    weights1 = random_generic_heuristic_weights()
+    weights2 = random_generic_heuristic_weights()
+
+    print(weights1)
+    print(weights2)
+
+    a = GenericHeuristic(weights1)
+    b = GenericHeuristic(weights2)
+
     winner = test_heuristics(a, b)
     print(f'winner (0 - first, 1 - second, None - tie): {winner}')
