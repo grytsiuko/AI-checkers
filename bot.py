@@ -32,10 +32,13 @@ class Bot:
         session = aiohttp.ClientSession(loop=loop)
         self._api = Api(session)
         self._meta_info = await self._api.connect(self._name)
-        self._mini_max = MiniMax(self._board, self._meta_info, self._depth, self._heuristic)
+        self._init_mini_max()
 
         await self._play()
         await session.close()
+
+    def _init_mini_max(self):
+        self._mini_max = MiniMax(self._board, self._meta_info, self._depth, self._heuristic)
 
     async def _play(self):
         while True:
