@@ -20,4 +20,6 @@ class AmountHeuristic:
                + 0.1 * self_statistics.positional_possible_moves_amount \
                + 0.1 * self_statistics.positional_open_positions_amount \
                + 0.3 * self_statistics.self_side \
-               - 0.3 * opponent_statistics.self_side
+               - 0.3 * opponent_statistics.self_side \
+               + self_statistics.avg_distance \
+               - opponent_statistics.avg_distance
