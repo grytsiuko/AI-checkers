@@ -1,3 +1,4 @@
+from heuristics.current_position_statistics import CurrentPositionStatistics
 from heuristics.position_statistics import PositionStatistics
 
 
@@ -9,7 +10,7 @@ class AmountHeuristic:
         self._checker_points = checker_points
         self._king_points = king_points
 
-    def calculate(self, self_statistics: PositionStatistics, opponent_statistics: PositionStatistics):
+    def calculate(self, self_statistics: CurrentPositionStatistics, opponent_statistics: PositionStatistics):
         return + self._checker_points * self_statistics.simple_amount \
                + self._king_points * self_statistics.king_amount \
                - self._checker_points * opponent_statistics.simple_amount \

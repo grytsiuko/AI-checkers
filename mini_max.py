@@ -1,6 +1,7 @@
 import random
 from functools import reduce
 
+from heuristics.current_position_statistics import CurrentPositionStatistics
 from heuristics.position_statistics import PositionStatistics
 
 
@@ -85,7 +86,7 @@ class MiniMax:
         self_pieces = self._board.searcher.get_pieces_by_player(self._meta_info.self_number)
         opponent_pieces = self._board.searcher.get_pieces_by_player(self._meta_info.opponent_number)
 
-        self_statistics = PositionStatistics(self_pieces)
+        self_statistics = CurrentPositionStatistics(self_pieces)
         opponent_statistics = PositionStatistics(opponent_pieces)
 
         heuristic = self._heuristic.calculate(
