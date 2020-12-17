@@ -83,11 +83,8 @@ class MiniMax:
             return value
 
     def _apply_heuristic(self):  # todo make static?
-        self_pieces = self._board.searcher.get_pieces_by_player(self._meta_info.self_number)
-        opponent_pieces = self._board.searcher.get_pieces_by_player(self._meta_info.opponent_number)
-
-        self_statistics = CurrentPositionStatistics(self_pieces)
-        opponent_statistics = PositionStatistics(opponent_pieces)
+        self_statistics = CurrentPositionStatistics(self._board, self._meta_info.self_number)
+        opponent_statistics = PositionStatistics(self._board, self._meta_info.opponent_number)
 
         heuristic = self._heuristic.calculate(
             self_statistics=self_statistics, opponent_statistics=opponent_statistics
