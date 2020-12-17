@@ -1,6 +1,8 @@
 import random
 from functools import reduce
 
+from heuristics.position_statistics import PositionStatistics
+
 
 class MiniMax:
 
@@ -83,30 +85,21 @@ class MiniMax:
         self_pieces = self._board.searcher.get_pieces_by_player(self._meta_info.self_number)
         opponent_pieces = self._board.searcher.get_pieces_by_player(self._meta_info.opponent_number)
 
-        self_king_amount = reduce(
-            (lambda count, piece: count + (1 if piece.king else 0)), self_pieces, 0
-        )
-        self_simple_amount = len(self_pieces) - self_king_amount
-
-        opponent_king_amount = reduce(
-            (lambda count, piece: count + (1 if piece.king else 0)), opponent_pieces, 0
-        )
-        opponent_simple_amount = len(opponent_pieces) - opponent_king_amount
+        self_statistics = PositionStatistics(self_pieces)
+        opponent_statistics = PositionStatistics(opponent_pieces)
 
         heuristic = self._heuristic.calculate(
-            self_simple_amount=self_simple_amount,
-            self_king_amount=self_king_amount,
-            opponent_simple_amount=opponent_simple_amount,
-            opponent_king_amount=opponent_king_amount,
+            self_statistics=self_statistics, opponent_statistics=opponent_statistics
         )
 
         self._board.print()
-        print(f'number                 {self._meta_info.self_number}')
-        print(f'self simple amount     {self_simple_amount}')
-        print(f'self king amount       {self_king_amount}')
-        print(f'opponent simple amount {opponent_simple_amount}')
-        print(f'opponent king amount   {opponent_king_amount}')
+        print(f'Number {self._meta_info.self_number}')
+        print("Self statistics")
+        print(self_statistics)
+        print("Opponent statistics")
+        print(opponent_statistics)
         print(f'HEURISTIC {heuristic}\n\n')
+
         return heuristic
 
     # def _is_terminal(self, board):  # todo make static?
