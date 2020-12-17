@@ -90,13 +90,13 @@ class MiniMax:
             self_statistics=self_statistics, opponent_statistics=opponent_statistics
         )
 
-        self._board.print()
-        print(f'Number {self._meta_info.self_number}')
-        print("Self statistics")
-        print(self_statistics)
-        print("Opponent statistics")
-        print(opponent_statistics)
-        print(f'HEURISTIC {heuristic}\n\n')
+        # self._board.print()
+        # print(f'Number {self._meta_info.self_number}')
+        # print("Self statistics")
+        # print(self_statistics)
+        # print("Opponent statistics")
+        # print(opponent_statistics)
+        # print(f'HEURISTIC {heuristic}\n\n')
 
         return heuristic
 
