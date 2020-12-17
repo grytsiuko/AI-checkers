@@ -47,13 +47,17 @@ def test_heuristics(a, b):
     return test_bots(b1, b2)
 
 
+def random_pair():
+    return (
+        random.uniform(GenericHeuristic.MIN_COEF, GenericHeuristic.MAX_COEF),
+        random.randint(GenericHeuristic.MIN_POW, GenericHeuristic.MAX_POW)
+    )
+
+
 def random_generic_heuristic_weights():
     ans = []
     while len(ans) < GenericHeuristic.PARAMETER_LIST_LENGTH:
-        ans.append((
-            random.uniform(GenericHeuristic.MIN_COEF, GenericHeuristic.MAX_COEF),
-            random.randint(GenericHeuristic.MIN_POW, GenericHeuristic.MAX_POW)
-        ))
+        ans.append(random_pair())
     return ans
 
 

@@ -6,7 +6,7 @@ class GenericHeuristic:
     PARAMETER_LIST_LENGTH = 14
     MIN_COEF = -20
     MAX_COEF = 20
-    MIN_POW = 0
+    MIN_POW = 1
     MAX_POW = 5
 
     def __init__(self, weights):
