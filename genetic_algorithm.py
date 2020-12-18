@@ -13,29 +13,26 @@ class GeneticAlgorithm:
         assert self.MAX_INDIVIDUALS % 4 == 0
         self.weights_list = self._init_weights()
         self.current_population = 0
+        self._file = None
 
     def start(self):
         while self.current_population < self.MAX_POPULATIONS:
             self._run_population()
             self.current_population = self.current_population + 1
-        print("\n\n\n### RESULT ###")
-        for weights in self.weights_list:
-            print(weights)
+        self._file = open('genetic_statistics.txt', 'a')
+        self._write_statistics("\n\n\n### RESULT ###", self.weights_list)
+        self._file.close()
 
     def _run_population(self):
-        print(f"### POPULATION {self.current_population} ###")
-        for weights in self.weights_list:
-            print(weights)
-        print()
+        self._file = open('genetic_statistics.txt', 'a')
+        self._write_statistics(f"### POPULATION {self.current_population} ###", self.weights_list)
 
         # get survivals
         random.shuffle(self.weights_list)
         survived_list = self._get_half_best(self.weights_list)
         assert len(survived_list) == self.MAX_INDIVIDUALS // 2
 
-        print(f"Survived")
-        for weights in survived_list:
-            print(weights)
+        self._write_statistics(f"Survived", survived_list)
 
         next_population = []
 
@@ -48,9 +45,7 @@ class GeneticAlgorithm:
             next_population += [weights1, weights2, new_weights1, new_weights2]
         assert len(next_population) == self.MAX_INDIVIDUALS
 
-        print(f"Crossed")
-        for weights in next_population:
-            print(weights)
+        self._write_statistics(f"Crossed", next_population)
 
         # mutations
         for i in range(0, self.MAX_INDIVIDUALS):
@@ -59,9 +54,7 @@ class GeneticAlgorithm:
                 next_population.append(self._mutate_weights(curr))
         assert len(next_population) == self.MAX_INDIVIDUALS * (2 ** self.MUTATION_TIMES)
 
-        print(f"Mutated")
-        for weights in next_population:
-            print(weights)
+        self._write_statistics(f"Mutated", next_population)
 
         # get best from generated
         for i in range(0, self.MUTATION_TIMES):
@@ -70,6 +63,17 @@ class GeneticAlgorithm:
         assert len(next_population) == self.MAX_INDIVIDUALS
 
         self.weights_list = next_population
+        self._file.close()
+
+    def _write_statistics(self, title, weights):
+        print(title)
+        for weight in weights:
+            print(weight)
+        print()
+        self._file.write(title + '\n')
+        for weight in weights:
+            self._file.write(str(weight) + '\n')
+        self._file.write('\n' + '\n')
 
     def _get_half_best(self, weights_list):
         best = []
