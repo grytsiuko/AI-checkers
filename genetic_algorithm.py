@@ -5,7 +5,7 @@ from training import random_generic_heuristic_weights, test_heuristics, random_p
 
 
 class GeneticAlgorithm:
-    MAX_POPULATIONS = 100
+    MAX_POPULATIONS = 10000
     MAX_INDIVIDUALS = 16
     MUTATION_TIMES = 1
 
@@ -20,12 +20,12 @@ class GeneticAlgorithm:
             self._run_population()
             self.current_population = self.current_population + 1
         self._file = open('genetic_statistics.txt', 'a')
-        self._write_statistics("\n\n\n### RESULT ###", self.weights_list)
+        self._write_statistics("\n\n\n### RESULT ###", self.weights_list, True)
         self._file.close()
 
     def _run_population(self):
         self._file = open('genetic_statistics.txt', 'a')
-        self._write_statistics(f"### POPULATION {self.current_population} ###", self.weights_list)
+        self._write_statistics(f"### POPULATION {self.current_population} ###", self.weights_list, True)
 
         # get survivals
         random.shuffle(self.weights_list)
@@ -65,11 +65,12 @@ class GeneticAlgorithm:
         self.weights_list = next_population
         self._file.close()
 
-    def _write_statistics(self, title, weights):
-        print(title)
-        for weight in weights:
-            print(weight)
-        print()
+    def _write_statistics(self, title, weights, console=False):
+        if console:
+            print(title)
+            for weight in weights:
+                print(weight)
+            print()
         self._file.write(title + '\n')
         for weight in weights:
             self._file.write(str(weight) + '\n')
