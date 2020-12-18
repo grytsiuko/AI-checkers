@@ -13,21 +13,21 @@ class PositionStatistics:
         )
         self.simple_amount = self.amount - self.king_amount
 
-        self.self_side = reduce(
-            (lambda count, piece: count + (1 if self._is_self_side(piece.position) else 0)), self._pieces, 0
-        )
-        self.opponent_side = self.amount - self.self_side
-
-        if self.amount <= 1:
-            self.avg_distance = 0
-        else:
-            distances_sum = 0
-            count = 0
-            for i in range(0, len(self._pieces) - 1):
-                for k in range(i + 1, len(self._pieces)):
-                    distances_sum += self._calculate_distance(self._pieces[i], self._pieces[k])
-                    count = count + 1
-            self.avg_distance = distances_sum / count
+        # self.self_side = reduce(
+        #     (lambda count, piece: count + (1 if self._is_self_side(piece.position) else 0)), self._pieces, 0
+        # )
+        # self.opponent_side = self.amount - self.self_side
+        #
+        # if self.amount <= 1:
+        #     self.avg_distance = 0
+        # else:
+        #     distances_sum = 0
+        #     count = 0
+        #     for i in range(0, len(self._pieces) - 1):
+        #         for k in range(i + 1, len(self._pieces)):
+        #             distances_sum += self._calculate_distance(self._pieces[i], self._pieces[k])
+        #             count = count + 1
+        #     self.avg_distance = distances_sum / count
 
     def _calculate_distance(self, piece1, piece2):
         row1, col1 = self._position_to_row_col(piece1.position)
