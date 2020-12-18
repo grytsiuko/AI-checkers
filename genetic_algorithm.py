@@ -94,8 +94,17 @@ class GeneticAlgorithm:
         for w in weights:
             new_weights.append((w[0], w[1]))
 
-        pair_to_mutate = random.randint(0, GenericHeuristic.PARAMETER_LIST_LENGTH - 1)
-        new_weights[pair_to_mutate] = random_pair()
+        index_pair_to_mutate = random.randint(0, GenericHeuristic.PARAMETER_LIST_LENGTH - 1)
+        index_tuple_to_mutate = random.randint(0, 1)
+
+        old_tuple = new_weights[index_pair_to_mutate]
+
+        new_element1 = random.uniform(GenericHeuristic.MIN_COEF,
+                                      GenericHeuristic.MAX_COEF) if index_tuple_to_mutate == 0 else old_tuple[0]
+        new_element2 = random.randint(GenericHeuristic.MIN_POW,
+                                      GenericHeuristic.MAX_POW) if index_tuple_to_mutate == 1 else old_tuple[1]
+
+        new_weights[index_pair_to_mutate] = (new_element1, new_element2)
         return new_weights
 
     def _crossover_weights(self, weights1, weights2):
