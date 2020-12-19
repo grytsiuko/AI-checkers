@@ -7,11 +7,11 @@ from training import random_generic_heuristic_weights, test_heuristics, random_p
 class GeneticAlgorithm:
     MAX_POPULATIONS = 10000
     MAX_INDIVIDUALS = 16
-    MUTATION_TIMES = 1
+    MUTATION_TIMES = 2
 
-    def __init__(self):
+    def __init__(self, init_weights=None):
         assert self.MAX_INDIVIDUALS % 4 == 0
-        self.weights_list = self._init_weights()
+        self.weights_list = self._init_weights(init_weights)
         self.current_population = 0
         self._file = None
 
@@ -27,15 +27,15 @@ class GeneticAlgorithm:
         self._file = open('genetic_statistics.txt', 'a')
         self._write_statistics(f"### POPULATION {self.current_population} ###", self.weights_list, True)
 
-        # get survivals
-        random.shuffle(self.weights_list)
-        survived_list = self._get_half_best(self.weights_list)
-        assert len(survived_list) == self.MAX_INDIVIDUALS // 2
-
-        self._write_statistics(f"Survived", survived_list)
+        # # get survivals
+        # random.shuffle(self.weights_list)
+        # survived_list = self._get_half_best(self.weights_list)
+        # assert len(survived_list) == self.MAX_INDIVIDUALS // 2
+        #
+        # self._write_statistics(f"Survived", survived_list)
 
         # get leader
-        leaders = survived_list
+        leaders = self.weights_list
         while len(leaders) > 1:
             random.shuffle(leaders)
             leaders = self._get_half_best(leaders)
@@ -47,27 +47,27 @@ class GeneticAlgorithm:
         next_population = []
 
         # crossover
-        random.shuffle(survived_list)
-        for i in range(0, self.MAX_INDIVIDUALS // 2, 2):
-            weights1 = survived_list[i]
-            weights2 = survived_list[i + 1]
+        random.shuffle(self.weights_list)
+        for i in range(0, self.MAX_INDIVIDUALS, 2):
+            weights1 = self.weights_list[i]
+            weights2 = self.weights_list[i + 1]
             new_weights1, new_weights2 = self._crossover_weights(weights1, weights2)
             next_population += [weights1, weights2, new_weights1, new_weights2]
-        assert len(next_population) == self.MAX_INDIVIDUALS
+        assert len(next_population) == self.MAX_INDIVIDUALS * 2
 
         self._write_statistics(f"Crossed", next_population)
 
         # mutations
-        for i in range(0, self.MAX_INDIVIDUALS):
+        for i in range(0, self.MAX_INDIVIDUALS * 2):
             curr = next_population[i]
             for k in range(0, (2 ** self.MUTATION_TIMES) - 1):
                 next_population.append(self._mutate_weights(curr))
-        assert len(next_population) == self.MAX_INDIVIDUALS * (2 ** self.MUTATION_TIMES)
+        assert len(next_population) == self.MAX_INDIVIDUALS * 2 * (2 ** self.MUTATION_TIMES)
 
         self._write_statistics(f"Mutated", next_population)
 
         # get best from generated
-        for i in range(0, self.MUTATION_TIMES):
+        for i in range(0, self.MUTATION_TIMES + 1):
             random.shuffle(self.weights_list)
             next_population = self._get_half_best(next_population)
         assert len(next_population) == self.MAX_INDIVIDUALS
@@ -142,13 +142,17 @@ class GeneticAlgorithm:
         assert len(new_weights1) == GenericHeuristic.PARAMETER_LIST_LENGTH
         return new_weights1, new_weights2
 
-    def _init_weights(self):
-        ans = []
-        while len(ans) < self.MAX_INDIVIDUALS:
-            ans.append(random_generic_heuristic_weights())
+    def _init_weights(self, init_weights):
+        ans = [init_weights]
+        if init_weights is None:
+            while len(ans) < self.MAX_INDIVIDUALS:
+                ans.append(random_generic_heuristic_weights())
+        else:
+            while len(ans) < self.MAX_INDIVIDUALS:
+                ans.append(self._mutate_weights(init_weights))
         return ans
 
 
 if __name__ == '__main__':
-    g = GeneticAlgorithm()
+    g = GeneticAlgorithm([(5,1), (10,1), (-5, 1), (-10, 1)])
     g.start()
