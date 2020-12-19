@@ -51,7 +51,7 @@ class MiniMax:
         return score
 
     def _alpha_beta(self, depth: int, alpha: float, beta: float):
-        if depth <= 0:  # or self._is_terminal(board):
+        if depth <= 0 and len(self._board.get_possible_capture_moves()) == 0:  # or self._is_terminal(board):
             # print('TERMINAL TERMINAL TERMINAL TERMINAL TERMINAL ')
             return self._apply_heuristic()
 
