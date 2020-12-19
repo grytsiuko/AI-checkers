@@ -81,8 +81,8 @@ class GeneticAlgorithm:
         for i in range(0, len(weights_list), 2):
             h1 = GenericHeuristic(weights_list[i])
             h2 = GenericHeuristic(weights_list[i + 1])
-            winner = test_heuristics(h1, h2)
-            if winner == 0:
+            diff = test_heuristics(h1, h2)
+            if diff > 0:
                 best.append(weights_list[i])
             else:
                 best.append(weights_list[i + 1])
@@ -95,14 +95,20 @@ class GeneticAlgorithm:
             new_weights.append((w[0], w[1]))
 
         index_pair_to_mutate = random.randint(0, GenericHeuristic.PARAMETER_LIST_LENGTH - 1)
-        index_tuple_to_mutate = random.randint(0, 1)
+        id_to_change = random.randint(0, 2)
 
         old_tuple = new_weights[index_pair_to_mutate]
 
-        new_element1 = random.uniform(GenericHeuristic.MIN_COEF,
-                                      GenericHeuristic.MAX_COEF) if index_tuple_to_mutate == 0 else old_tuple[0]
-        new_element2 = random.randint(GenericHeuristic.MIN_POW,
-                                      GenericHeuristic.MAX_POW) if index_tuple_to_mutate == 1 else old_tuple[1]
+        new_element1 = old_tuple[0]
+        new_element2 = old_tuple[1]
+
+        if id_to_change == 0:  # sign
+            new_element1 *= -1
+        if id_to_change == 1:  # abs
+            new_element1 = random.uniform(0, GenericHeuristic.MAX_COEF) \
+                           * (1 if new_element1 > 0 else -1)
+        if id_to_change == 2:  # pow
+            new_element2 = random.randint(GenericHeuristic.MIN_POW, GenericHeuristic.MAX_POW)
 
         new_weights[index_pair_to_mutate] = (new_element1, new_element2)
         return new_weights

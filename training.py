@@ -33,9 +33,10 @@ def test_bots(a, b):
 
         if move is None:
             winner_number = 3 - board.player_turn
-            return winner_number - 1
+            winner_index = winner_number - 1
+            return 1 if winner_index == 0 else -1
         if count >= MAX_COUNT_NO_CAPTURE:
-            return None
+            return len(board.searcher.get_pieces_by_player(1)) - len(board.searcher.get_pieces_by_player(2))
 
         board.do_move(move)
         count = count + 1
