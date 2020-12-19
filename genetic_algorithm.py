@@ -37,6 +37,7 @@ class GeneticAlgorithm:
         # get leader
         leaders = survived_list
         while len(leaders) > 1:
+            random.shuffle(leaders)
             leaders = self._get_half_best(leaders)
         assert len(leaders) == 1
 
