@@ -34,6 +34,15 @@ class GeneticAlgorithm:
 
         self._write_statistics(f"Survived", survived_list)
 
+        # get leader
+        leaders = survived_list
+        while len(leaders) > 1:
+            leaders = self._get_half_best(leaders)
+        assert len(leaders) == 1
+
+        self._write_statistics(f"Leader", leaders, True)
+
+        # init next population
         next_population = []
 
         # crossover
@@ -80,6 +89,9 @@ class GeneticAlgorithm:
         best = []
         for i in range(0, len(weights_list), 2):
             h1 = GenericHeuristic(weights_list[i])
+            if i + 1 == len(weights_list):
+                best.append(weights_list[i])
+                break
             h2 = GenericHeuristic(weights_list[i + 1])
             diff = test_heuristics(h1, h2)
             if diff > 0:
