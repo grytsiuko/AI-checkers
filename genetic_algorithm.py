@@ -6,8 +6,9 @@ from training import random_generic_heuristic_weights, test_heuristics, random_p
 
 class GeneticAlgorithm:
     MAX_POPULATIONS = 10000
-    MAX_INDIVIDUALS = 16
+    MAX_INDIVIDUALS = 4
     MUTATION_TIMES = 2
+    STABILITY_PERCENTAGE = 0.8
 
     def __init__(self, init_weights=None):
         assert self.MAX_INDIVIDUALS % 4 == 0
@@ -118,10 +119,12 @@ class GeneticAlgorithm:
         if id_to_change == 0:  # sign
             new_element1 *= -1
         if id_to_change == 1:  # abs
-            new_element1 = random.uniform(0, GenericHeuristic.MAX_COEF) \
-                           * (1 if new_element1 > 0 else -1)
+            new_element1 = new_element1 * self.STABILITY_PERCENTAGE \
+                           + random.uniform(GenericHeuristic.MIN_COEF, GenericHeuristic.MAX_COEF) * (1 - self.STABILITY_PERCENTAGE)
         if id_to_change == 2:  # pow
-            new_element2 = random.randint(GenericHeuristic.MIN_POW, GenericHeuristic.MAX_POW)
+            new_element2 = round(
+                (random.randint(GenericHeuristic.MIN_POW, GenericHeuristic.MAX_POW) + new_element2) / 2
+            )
 
         new_weights[index_pair_to_mutate] = (new_element1, new_element2)
         return new_weights
