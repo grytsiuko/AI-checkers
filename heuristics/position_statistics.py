@@ -13,10 +13,10 @@ class PositionStatistics:
         )
         self.simple_amount = self.amount - self.king_amount
 
-        self.self_side = reduce(
-            (lambda count, piece: count + (1 if self._is_self_side(piece.position) else 0)), self._pieces, 0
-        )
-        self.opponent_side = self.amount - self.self_side
+        # self.self_side = reduce(
+        #     (lambda count, piece: count + (1 if self._is_self_side(piece.position) else 0)), self._pieces, 0
+        # )
+        # self.opponent_side = self.amount - self.self_side
 
         if self.amount <= 1:
             self.avg_distance = 0

@@ -2,10 +2,12 @@ import random
 
 from bot import Bot
 from game_board import Board
+from heuristics.amount_heuristic import AmountHeuristic
 from heuristics.generic_heuristic import GenericHeuristic
 from meta_info import MetaInfo
 
 MAX_COUNT_NO_CAPTURE = 100
+WINNER_POINTS = 40
 
 
 def test_bots(a, b):
@@ -34,7 +36,7 @@ def test_bots(a, b):
         if move is None:
             winner_number = 3 - board.player_turn
             winner_index = winner_number - 1
-            return 1 if winner_index == 0 else -1
+            return WINNER_POINTS if winner_index == 0 else -WINNER_POINTS
         if count >= MAX_COUNT_NO_CAPTURE:
             return len(board.searcher.get_pieces_by_player(1)) - len(board.searcher.get_pieces_by_player(2))
 
@@ -63,14 +65,25 @@ def random_generic_heuristic_weights():
 
 
 if __name__ == '__main__':
-    weights1 = random_generic_heuristic_weights()
-    weights2 = random_generic_heuristic_weights()
-
-    print(weights1)
-    print(weights2)
+    # weights1 = [(12.424879018719095, 1), (16.263504183839, 1), (-8.663468683373988, 1), (-5.705007490296328, 1), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0)]
+    weights1 = [(17.41116823035462, 1), (10.435190890097182, 1), (-7.965428824206731, 1), (-3.915778483892097, 1), (0.4564055792717028, 1), (2.004584341448993, 1)]
+    weights2 = [(9.641645271262528, 1), (7.937580998873643, 1), (-10.91580903389827, 1), (-8.305769224686562, 1), (-1.4816960386162217, 1), (1.78721893193003, 1)]
 
     a = GenericHeuristic(weights1)
+    # b = GenericHeuristic(weights2)
+    # a = AmountHeuristic()
     b = GenericHeuristic(weights2)
 
-    winner = test_heuristics(a, b)
-    print(f'winner (0 - first, 1 - second, None - tie): {winner}')
+    a_wins = 0
+    b_wins = 0
+
+    for i in range(0, 50):
+        result = test_heuristics(a, b)
+        if result == WINNER_POINTS:
+            a_wins += 1
+        if result == -WINNER_POINTS:
+            b_wins += 1
+
+    print()
+    print(f'First wins   {a_wins}')
+    print(f'Second wins  {b_wins}')
