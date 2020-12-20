@@ -7,10 +7,9 @@ from training import random_generic_heuristic_weights, test_heuristics, random_p
 class GeneticAlgorithm:
     MAX_POPULATIONS = 10000
     MAX_INDIVIDUALS = 32
-    # MUTATION_TIMES = 3
-    STABILITY_PERCENTAGE = 0.9
-    MUTATION_PROBABILITY = 0.1
-    CROSSOVER_PROBABILITY = 0.4
+    STABILITY_PERCENTAGE = 0.98
+    MUTATION_PROBABILITY = 0.04
+    CROSSOVER_PROBABILITY = 0.1
 
     # 0.4 / (l*n) (l - elements of heuristic, n - individuals)
     # crossover with probability
@@ -168,5 +167,5 @@ class GeneticAlgorithm:
 
 if __name__ == '__main__':
     starting = None
-    g = GeneticAlgorithm([(12.424879018719095, 1), (16.263504183839, 1), (-8.663468683373988, 1), (-5.705007490296328, 1), (0,1), (0,1), (0,1), (0,1)])
+    g = GeneticAlgorithm([(12.424879018719095, 1), (16.263504183839, 1), (-8.663468683373988, 1), (-5.705007490296328, 1)])
     g.start()
