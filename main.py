@@ -13,7 +13,8 @@ from bot import Bot
 
 if __name__ == '__main__':
     a = threading.Thread(target=Bot("A", 2, LegendaryHeuristic(), ParallelMiniMax).start)
-    b = threading.Thread(target=Bot("B", 2).start)
+    b = threading.Thread(target=Bot("B", 2, LegendaryHeuristic(), ParallelMiniMax).start)
+    # b = threading.Thread(target=Bot("B", 2, mini_max_class=ParallelMiniMax).start)
 
     a.start()
     b.start()
