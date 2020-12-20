@@ -10,8 +10,8 @@ from bot import Bot
 
 
 if __name__ == '__main__':
-    a = threading.Thread(target=Bot("A", 4, AmountHeuristic()).start)
-    b = threading.Thread(target=Bot("B", 4, GenericHeuristic([(8.381027398142448, 1), (14.892423630849386, 1), (-6.113348213713902, 1), (-7.25078953395785, 1)])).start)
+    a = threading.Thread(target=Bot("A", 4, GenericHeuristic([(15.847631627141228, 1), (16.844416281435063, 1), (-8.69849000004436, 1), (-7.870489568007705, 1)])).start)
+    b = threading.Thread(target=Bot("B", 4, GenericHeuristic([(12.424879018719095, 1), (15.91370955442923, 1), (-8.586177288183745, 1), (-7.246833475445805, 1)])).start)
 
     a.start()
     b.start()

@@ -8,9 +8,9 @@ class GeneticAlgorithm:
     MAX_POPULATIONS = 10000
     MAX_INDIVIDUALS = 40
     # MUTATION_TIMES = 3
-    STABILITY_PERCENTAGE = 0.8
-    MUTATION_PROBABILITY = 0.1
-    CROSSOVER_PROBABILITY = 0.4
+    STABILITY_PERCENTAGE = 0.95
+    MUTATION_PROBABILITY = 0.05
+    CROSSOVER_PROBABILITY = 0.2
 
     # 0.4 / (l*n) (l - elements of heuristic, n - individuals)
     # crossover with probability
