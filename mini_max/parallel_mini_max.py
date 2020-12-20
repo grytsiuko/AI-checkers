@@ -5,6 +5,8 @@ from time import sleep
 from mini_max.mini_max_base import MiniMaxBase
 import copy
 
+manager = multiprocessing.Manager()
+
 
 def start(board, meta_info, depth, heuristic, index, th_dic):
     base_mini_max = MiniMaxBase(board, meta_info, depth, heuristic)
@@ -25,16 +27,16 @@ class ParallelMiniMax:
 
     def _init_process(self, depth, index):
         return multiprocessing.Process(target=start, args=(
-            copy.deepcopy(self._board), self._meta_info, depth, self._heuristic, index, self._process_dict)
-        )
+            copy.deepcopy(self._board), self._meta_info, depth, self._heuristic, index, self._process_dict
+        ))
 
     def find_best_move(self):
-        self._process_dict = {2: None, 4: None, 6: None}
+        self._process_dict = manager.list([None, None, None])
         best_move = None
 
-        process6 = self._init_process(6, 6)
-        process4 = self._init_process(4, 4)
-        process2 = self._init_process(2, 2)
+        process6 = self._init_process(6, 2)
+        process4 = self._init_process(4, 1)
+        process2 = self._init_process(2, 0)
 
         process6.start()
         process4.start()
@@ -44,9 +46,9 @@ class ParallelMiniMax:
             sleep(0.1)
 
         print(self._process_dict)
+        best_move = self._process_dict[0] if self._process_dict[0] else best_move
+        best_move = self._process_dict[1] if self._process_dict[1] else best_move
         best_move = self._process_dict[2] if self._process_dict[2] else best_move
-        best_move = self._process_dict[4] if self._process_dict[4] else best_move
-        best_move = self._process_dict[6] if self._process_dict[6] else best_move
 
         process2.terminate()
         process4.terminate()
