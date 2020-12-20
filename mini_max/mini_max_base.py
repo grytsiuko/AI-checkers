@@ -5,7 +5,7 @@ from heuristics.current_position_statistics import CurrentPositionStatistics
 from heuristics.position_statistics import PositionStatistics
 
 
-class MiniMax:
+class MiniMaxBase:
 
     def __init__(self, board, meta_info, depth, heuristic):
         self._board = board

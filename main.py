@@ -11,8 +11,8 @@ from bot import Bot
 
 
 if __name__ == '__main__':
-    a = threading.Thread(target=Bot("A", 2, LegendaryHeuristic()).start)
-    b = threading.Thread(target=Bot("B", 6, LegendaryHeuristic()).start)
+    a = threading.Thread(target=Bot("A", 4).start)
+    b = threading.Thread(target=Bot("B", 4).start)
 
     a.start()
     b.start()
