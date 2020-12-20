@@ -11,7 +11,7 @@ from bot import Bot
 
 if __name__ == '__main__':
     a = threading.Thread(target=Bot("A", 4, AmountHeuristic()).start)
-    b = threading.Thread(target=Bot("B", 4, GenericHeuristic([(7.914061892508757, 1), (19.551653679861975, 5), (-7.786509878886294, 1), (-8.593531918124507, 1)])).start)
+    b = threading.Thread(target=Bot("B", 4, GenericHeuristic([(8.381027398142448, 1), (14.892423630849386, 1), (-6.113348213713902, 1), (-7.25078953395785, 1)])).start)
 
     a.start()
     b.start()
