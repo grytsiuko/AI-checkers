@@ -43,8 +43,8 @@ class ParallelMiniMax:
             processes.append(process)
             process.start()
 
-        while self._get_millis() + 400 < self._final_time:
-            sleep(0.1)
+        while not all(self._process_dict) and self._get_millis() + 300 < self._final_time:
+            sleep(0.05)
 
         print(self._process_dict)
 
