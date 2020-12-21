@@ -1,3 +1,6 @@
+import time
+
+
 class State:
     def __init__(self, data=None):
         self._data = data
@@ -19,3 +22,7 @@ class State:
 
     def _is_last_move_color(self, color):
         return self._data['last_move']['player'] == color
+
+    def final_time(self):
+        final = int(round(time.time() * 1000)) + self._data["available_time"] * 1000
+        return final

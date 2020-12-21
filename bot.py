@@ -45,6 +45,7 @@ class Bot:
         while True:
             while True:
                 self._state = await self._api.refresh_state()
+                self._mini_max._final_time = self._state.final_time()
                 if self._state.is_finished():
                     return
                 if self._state.is_color_move(self._meta_info.self_color):
