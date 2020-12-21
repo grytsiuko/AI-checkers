@@ -10,7 +10,6 @@ def start(board, meta_info, depth, heuristic, index, th_dic):
     base_mini_max = MiniMaxBase(board, meta_info, depth, heuristic)
     index = index
     th_dic[index] = base_mini_max.find_best_move()
-    print(f'{index} done {th_dic}')
 
 
 class ParallelMiniMax:
@@ -45,8 +44,6 @@ class ParallelMiniMax:
 
         while not all(self._process_dict) and self._get_millis() + 300 < self._final_time:
             sleep(0.05)
-
-        print(self._process_dict)
 
         for i in range(0, depths_amount):
             best_move = self._process_dict[i] if self._process_dict[i] else best_move

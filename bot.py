@@ -6,6 +6,7 @@ import aiohttp
 from api import Api
 from game_board import Board
 from heuristics.legendary_heuristic import LegendaryHeuristic
+from heuristics.space_heuristic import SpaceHeuristic
 from meta_info import MetaInfo
 from mini_max.mini_max_base import MiniMaxBase
 from state import State
@@ -13,7 +14,7 @@ from state import State
 
 class Bot:
 
-    def __init__(self, name, depth, heuristic=LegendaryHeuristic(), mini_max_class=MiniMaxBase):
+    def __init__(self, name, depth, heuristic=SpaceHeuristic(), mini_max_class=MiniMaxBase):
         self._name = name
         self._depth = depth
         self._board: Board = Board()
@@ -51,7 +52,6 @@ class Bot:
                 if self._state.is_color_move(self._meta_info.self_color):
                     break
 
-            # await asyncio.sleep(0.25)
             self._update_with_last_move()
             move = self._mini_max.find_best_move()
             if move is None:

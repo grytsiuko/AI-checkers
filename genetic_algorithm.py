@@ -11,10 +11,6 @@ class GeneticAlgorithm:
     MUTATION_PROBABILITY = 0.01
     CROSSOVER_PROBABILITY = 0.05
 
-    # 0.4 / (l*n) (l - elements of heuristic, n - individuals)
-    # crossover with probability
-    # in-place
-
     def __init__(self, init_weights=None, full=None):
         assert self.MAX_INDIVIDUALS % 4 == 0
         if full is not None:
