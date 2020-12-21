@@ -23,7 +23,7 @@ class ParallelMiniMax:
         self._heuristic = heuristic
         self._final_time = None
         self._manager = multiprocessing.Manager()
-        self._depths_list = [depth, depth*2, depth*3]
+        self._depths_list = [depth, depth + 2, depth + 4]
 
     def _init_process(self, depth, index):
         return multiprocessing.Process(target=start, args=(
