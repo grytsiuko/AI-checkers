@@ -51,6 +51,7 @@ class Bot:
                     return
                 if self._state.is_color_move(self._meta_info.self_color):
                     break
+                await asyncio.sleep(0.05)
 
             self._update_with_last_move()
             move = self._mini_max.find_best_move()
